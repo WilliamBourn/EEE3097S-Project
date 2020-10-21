@@ -27,7 +27,7 @@ DEFAULT_GROUNDLOCK = 39 #always set to ground, never used
 
 #Flags
 #-----------------------------------------------
-_lock_open_en = None
+_lock_open = None
 
 #-----------------------------------------------
 #Functions
@@ -35,34 +35,37 @@ _lock_open_en = None
 
 #Setup Functions
 #-----------------------------------------------
-def initialize_gpio(high_lock=DEFAULT_HIGHLOCK,lock_open_en=False):
-    global _lock_open_en
+def initialize_gpio(high_lock=DEFAULT_HIGHLOCK,lock_open = True):
+    global _lock_open
 
     #Set all the global variables
-    _lock_open_en = lock_open_en
-
+    _lock_open = lock_open
+    
     #Set GPIO mode to board
     GPIO.setmode(GPIO.BOARD)
     GPIO.setwarnings(False)
 
     #Initialize row pins as output pins with a default high logic value
     GPIO.setup(high_lock, GPIO.OUT)
-    GPIO.output(high_lock, GPIO.LOW)
+    if _lock_open == True:
+      GPIO.output(high_lock, GPIO.LOW)
+    else:
+      GPIO.output(high_lock, GPIO.HIGH)
 
 #Boolean Functions
 #-----------------------------------------------
-def enable_lock_open(bool):
-    global _lock_open_en
-    _lock_open_en = bool
-
 def close_lock():
+  global _lock_open
   print("about to close lock") #for testing
   GPIO.output(DEFAULT_HIGHLOCK, GPIO.HIGH)
+  _lock_open = False
   print("closing lock") #for testing purposes
 
 def open_lock():
+  global _lock_open
   print("about to open lock") #for testing
   GPIO.output(DEFAULT_HIGHLOCK, GPIO.LOW)
+  _lock_open = True
   print("opening lock") #for testing purposes
 
 #Main function
@@ -71,7 +74,7 @@ def open_lock():
 
 if __name__ == "__main__":
     try:
-        initialize_gpio(lock_open_en=True)
+        initialize_gpio()
         while True:
             lockstate = input("Close lock? (Y/N) ")
             print("your input was: "+lockstate)
