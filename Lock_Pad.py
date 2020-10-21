@@ -72,14 +72,14 @@ if __name__ == "__main__":
         initialize_gpio(_lock_open_en=True)
         while True:
             lockstate = input("Close lock? (Y/N) "
-            
+
             if lockstate=="Y":
-                close_lock                
+                close_lock
             elif: lockstate=="N":
                 open_lock
             else:
                 print("invalid input")
 
-    
+
     except Exception as e:
-        print(e) 
+        print(e)
