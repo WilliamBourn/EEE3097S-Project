@@ -56,18 +56,14 @@ def initialize_gpio(high_lock=DEFAULT_HIGHLOCK,lock_open = True):
 #-----------------------------------------------
 def close_lock():
   global _lock_open
-  print("about to close lock") #for testing
   GPIO.output(DEFAULT_HIGHLOCK, GPIO.HIGH)
   _lock_open = False
-  print("closing lock") #for testing purposes
 
 def open_lock():
   global _lock_open
-  print("about to open lock") #for testing
   GPIO.output(DEFAULT_HIGHLOCK, GPIO.LOW)
   _lock_open = True
-  print("opening lock") #for testing purposes
-
+  
 #Main function
 #-----------------------------------------------
 #Dispose of this when done. Shouldn't be part of library, its only for testing
