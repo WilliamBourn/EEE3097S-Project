@@ -55,11 +55,11 @@ def enable_lock_open(bool):
     global _lock_open_en 
     _lock_open_en = bool
 
-def close_lock:
+def close_lock():
   GPIO.output(DEFAULT_HIGHLOCK, GPIO.HIGH)
   print("closing lock") #for testing purposes
   
-def open_lock:
+def open_lock():
   GPIO.output(DEFAULT_HIGHLOCK, GPIO.LOW)
   print("opening lock") #for testing purposes
   
