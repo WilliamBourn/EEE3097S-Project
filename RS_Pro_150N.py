@@ -17,74 +17,97 @@ except RuntimeError as e:
 #Constants
 #-----------------------------------------------
 
+#Default States
+HIGH_LOCK_STATE = GPIO.HIGH
+LOW_LOCK_STATE = GPIO.LOW
+
 #Default Pins
-DEFAULT_HIGHLOCK = 37 #sets to voltage high for on, and low for off
-DEFAULT_GROUNDLOCK = 39 #always set to ground, never used
+DEFAULT_LOCK_PIN = 37 
+GROUND = 39 			#Isn't used in code. Default ground pin on Raspberry Pi
+
 
 #-----------------------------------------------
-#Global Variables
+#Class Definition
 #-----------------------------------------------
 
+class RS_Pro:
+  
+
+#-----------------------------------------------
+#Class Variables
+#-----------------------------------------------
+
+    #Pins
+    lock_pin = None		#The GPIO pin associated with the lock. When set to the same state as lock_state, the lock will be magnetized
+    
+    #States
+    lock_state = None		#The state which will cause the lock to be magnetized. Should be either GPIO.HIGH or GPIO.LOW
+    
 #Flags
 #-----------------------------------------------
-_lock_open = None
+
+    lock_open = None		#Flag that indicates the lock is not magnetized when True
+
 
 #-----------------------------------------------
 #Functions
 #-----------------------------------------------
 
-#Setup Functions
+#GPIO Functions
 #-----------------------------------------------
-def initialize_gpio(high_lock=DEFAULT_HIGHLOCK,lock_open = True):
-    global _lock_open
-
-    #Set all the global variables
-    _lock_open = lock_open
     
-    #Set GPIO mode to board
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setwarnings(False)
+    #Initialize all the GPIO pins that the lock uses
+    def initialize_gpio(self):
 
-    #Initialize row pins as output pins with a default high logic value
-    GPIO.setup(high_lock, GPIO.OUT)
-    if _lock_open == True:
-      GPIO.output(high_lock, GPIO.LOW)
-    else:
-      GPIO.output(high_lock, GPIO.HIGH)
+        #Set GPIO mode to board
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setwarnings(False)
 
-#Boolean Functions
+        #Initialize lock pin 
+        GPIO.setup(self.lock_pin, GPIO.OUT)
+        if self.lock_open == False:
+            GPIO.output(self.lock_pin,self.lock_state)
+        else:
+            GPIO.output(self.lock_pin,not(self.lock_state))
+          
+    #Clears all the GPIO pins that the lock uses
+    def cleanup_gpio(self):
+        
+        #Set GPIO mode to board
+        GPIO.setmode(GPIO.BOARD)
+        
+        #Cleanup pins
+        GPIO.cleanup(self.lock_pin)
+    
+    #Set the lock pin to lock state
+    def activate_lock(self):
+        
+        #Set lock pin to lock state
+        GPIO.output(self.lock_pin,self.lock_state)
+
+        #Set flags
+        lock_open = False
+
+    #Set the lock pin to non-lock state
+    def deactivate_lock(self):
+
+        #Set lock pin to non-lock state
+        GPIO.output(self.lock_pin,not(self.lock_state))
+
+        #Set flags
+        lock_open = True
+
+
+#Class Initializtion Function
 #-----------------------------------------------
-def close_lock():
-  global _lock_open
-  GPIO.output(DEFAULT_HIGHLOCK, GPIO.HIGH)
-  _lock_open = False
 
-def open_lock():
-  global _lock_open
-  GPIO.output(DEFAULT_HIGHLOCK, GPIO.LOW)
-  _lock_open = True
-  
-#Main function
-#-----------------------------------------------
-#Dispose of this when done. Shouldn't be part of library, its only for testing
-
-if __name__ == "__main__":
-    try:
-        initialize_gpio()
-        while True:
-            lockstate = input("Close lock? (Y/N) ")
-            print("your input was: "+lockstate)
-
-            if lockstate=="Y":
-                close_lock()
-            elif lockstate=="N":
-                open_lock()
-            else:
-                print("invalid input")
-
-
-    except Exception as e:
-        print(e)
-
-#TODO: Figure out how how to make the GPIO.LOW voltage even lower so magnet isn't semi hard
-#TODO: Figure out why the code runs on a Thonny IDE but not on the commandline
+    #Constructor. Creates an object instance of this class
+    def __init__(self, lock_pin=DEFAULT_LOCK_PIN, lock_state=HIGH_LOCK_STATE, lock_open = True):
+        
+        #Set all class variables
+        self.lock_pin = lock_pin
+        self.lock_state = lock_state
+        self.lock_open = lock_open
+        
+        #Initialize GPIO
+        self.initialize_gpio()
