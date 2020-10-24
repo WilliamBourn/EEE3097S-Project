@@ -36,7 +36,7 @@ DEFAULT_LONG_PRESS_DELAY = 500
 #Class Definition
 #-----------------------------------------------
 
-class EOZ_IP40:
+class Keypad:
 
 
 #-----------------------------------------------
