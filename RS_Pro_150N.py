@@ -30,7 +30,7 @@ GROUND = 39 			#Isn't used in code. Default ground pin on Raspberry Pi
 #Class Definition
 #-----------------------------------------------
 
-class RS_Pro:
+class Maglock:
   
 
 #-----------------------------------------------
