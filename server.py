@@ -33,7 +33,7 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
     if self.Request == 'off':
       Lock1.deactivate_lock()
 
-    code = self.Request[int(len(Request)-5):]    
+    code = self.Request[int(len(Request)-4):]    
     print(code)
     self.Request = self.Request[:int(len(Request)-5)]
     print(self.Request)
