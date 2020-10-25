@@ -8,6 +8,8 @@ Request = None
 
 
 class RequestHandler_httpd(BaseHTTPRequestHandler):
+  Lock1 = Lock.Maglock()
+  
   def do_GET(self):
     global Request
     messagetosend = bytes('Hello world',"utf")
@@ -20,7 +22,6 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
     Request = Request[5 : int(len(Request)-9)]
     
     print(Request)
-    Lock1 = Lock.Maglock()
     
     if Request == 'on':
       Lock1.activate_lock() #should activate lock
