@@ -4,6 +4,8 @@ import EOZ_IP40 as Keypad
 import RS_Pro_150N as Lock
 import RPi.GPIO as GPIO  
 
+Lock1 = Lock.Maglock()
+Keypad1 = Keypad.Keypad()
 
 class RequestHandler_httpd(BaseHTTPRequestHandler):
   Request = []
@@ -11,38 +13,45 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
   maincode = []
   tempcode = []
   
-  Lock1 = Lock.Maglock()
-  Keypad1 = Keypad.Keypad()
+  
   
   def do_GET(self):
-    messagetosend = bytes('Hello world',"utf")
+    messagetosend = bytes('Welcome to the dodgy security way of transferring data to the pi api',"utf")
     self.send_response(200)
     self.send_header('Content-Type', 'text/plain')
     self.send_header('Content-Length', len(messagetosend))
     self.end_headers()
     self.wfile.write(messagetosend)
     self.Request = self.requestline
-    Request = Request[5 : int(len(Request)-9)]
+    self.Request = self.Request[5 : int(len(self.Request)-9)]
     
-    print(Request)
+    #print(self.Request)
     
-    if self.Request == 'on':
+    if self.Request =="favicon.ico":
+      pass #do nothing, this thing is just annoying
+
+    elif self.Request == 'on':
       Lock1.activate_lock() #should activate lock
-      print(Lock1.lock_pin) #testing the lock pin
+      print("Lock activation request sent")      
 
-    if self.Request == 'off':
+    elif self.Request == 'off':
       Lock1.deactivate_lock()
+      print("Lock deactivation request sent")
 
-    code = self.Request[int(len(Request)-4):]    
-    print(code)
-    self.Request = self.Request[:int(len(Request)-5)]
-    print(self.Request)
-
+    else: #else statement is here so the code bellow doesn't break it
+      code = self.Request[int(len(self.Request)-4):] 
+      self.Request = self.Request[:int(len(self.Request)-5)]
+      print("the passcode command is: "+  self.Request)
+      print("the code to be set is: "+ code)
+      
     if self.Request == 'setMain':
       self.maincode = code
+      print("MainPasscode change request sent")
+
     
     if self.Request == 'setTemp':
       self.tempcode = code
+      print("TempPasscode change request sent")
 
     return
 
