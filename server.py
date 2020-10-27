@@ -6,18 +6,20 @@ import EOZ_IP40 as Keypad
 import RS_Pro_150N as Lock
 import RPi.GPIO as GPIO  
 
-Lock1 = Lock.Maglock()
+Lock1 = Lock.Maglock(lock_open=False)
 Keypad1 = Keypad.Keypad(key_buffer_en=True)
+maincode = []
+tempcode = []
+
 
 class RequestHandler_httpd(BaseHTTPRequestHandler):
   Request = []
-  
-  maincode = []
-  tempcode = []
-  
+   
   
   
   def do_GET(self):
+    global maincode, tempcode
+    
     messagetosend = bytes('Welcome to the dodgy security way of transferring data to the pi api',"utf")
     self.send_response(200)
     self.send_header('Content-Type', 'text/plain')
@@ -49,12 +51,16 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
       print("the code to be set is: "+ code)
       
     if self.Request == 'setMain':
-      self.maincode = code
+      maincode = []
+      for char in code:
+        maincode.append(char)
       print("MainPasscode change request sent")
       return
     
     elif self.Request == 'setTemp':
-      self.tempcode = code
+      tempcode = []
+      for char in code:
+        tempcode.append(char)
       print("TempPasscode change request sent")
       return
     
@@ -76,6 +82,11 @@ while True:
   
   if len(Keypad1.key_buffer) == 4:
     x = Keypad1.fetch_all()
+    
+    print(maincode)
+    print(tempcode)
+    print(x)
+    
     if (len(maincode) == 4) & (x == maincode):
       print("maincode entered correctly")
       Lock1.deactivate_lock()
