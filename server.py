@@ -1,11 +1,13 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import threading
+import time
 
 import EOZ_IP40 as Keypad
 import RS_Pro_150N as Lock
 import RPi.GPIO as GPIO  
 
 Lock1 = Lock.Maglock()
-Keypad1 = Keypad.Keypad()
+Keypad1 = Keypad.Keypad(key_buffer_en=True)
 
 class RequestHandler_httpd(BaseHTTPRequestHandler):
   Request = []
@@ -32,12 +34,14 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
 
     elif self.Request == 'on':
       Lock1.activate_lock() #should activate lock
-      print("Lock activation request sent")      
+      print("Lock activation request sent")
+      return     
 
     elif self.Request == 'off':
       Lock1.deactivate_lock()
       print("Lock deactivation request sent")
-
+      return
+      
     else: #else statement is here so the code bellow doesn't break it
       code = self.Request[int(len(self.Request)-4):] 
       self.Request = self.Request[:int(len(self.Request)-5)]
@@ -47,15 +51,47 @@ class RequestHandler_httpd(BaseHTTPRequestHandler):
     if self.Request == 'setMain':
       self.maincode = code
       print("MainPasscode change request sent")
-
+      return
     
-    if self.Request == 'setTemp':
+    elif self.Request == 'setTemp':
       self.tempcode = code
       print("TempPasscode change request sent")
-
+      return
+    
     return
 
-server_address_httpd = ('192.168.0.120',8080)
-httpd = HTTPServer(server_address_httpd, RequestHandler_httpd)
-print('Starting Server')
-httpd.serve_forever()
+def start_server():
+  server_address_httpd = ('192.168.0.120',8080)
+  httpd = HTTPServer(server_address_httpd, RequestHandler_httpd)
+  thread = threading.Thread(target=httpd.serve_forever)
+  thread.start()
+  print('Starting Server')
+
+
+start_server()
+
+while True:
+  
+  close_lock_after_delay = False
+  
+  if len(Keypad1.key_buffer) == 4:
+    x = Keypad1.fetch_all()
+    if (len(maincode) == 4) & (x == maincode):
+      print("maincode entered correctly")
+      Lock1.deactivate_lock()
+      close_lock_after_delay = True
+    elif (len(tempcode) == 4) & (x == tempcode):
+      print("tempcode entered correctly")
+      Lock1.deactivate_lock()
+      close_lock_after_delay = True
+      tempcode = []
+    else:
+      print("Password incorrect")
+      
+  elif len(Keypad1.key_buffer) < 4:
+    print("Error: too many inputs")
+    x = Keypad.fetch_all()
+
+  if close_lock_after_delay == True:
+    time.sleep(5)
+    Lock1.activate_lock()
