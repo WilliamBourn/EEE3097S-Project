@@ -88,9 +88,9 @@ while True:
     else:
       print("Password incorrect")
       
-  elif len(Keypad1.key_buffer) < 4:
+  elif len(Keypad1.key_buffer) > 4:
     print("Error: too many inputs")
-    x = Keypad.fetch_all()
+    x = Keypad1.fetch_all()
 
   if close_lock_after_delay == True:
     time.sleep(5)
