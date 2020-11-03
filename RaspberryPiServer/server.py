@@ -3,6 +3,7 @@
 #-----------------------------------------------
 
 #Libraries used:
+#sys - System
 #BaseHTTPRequestHandler - A request handler for the HTTP protocol
 #HTTPServer - Server implementation for the HTTP protocol
 #threading - Concurrent thread implementation
@@ -12,6 +13,7 @@
 #RS_Pro_150N - API module for magnetic lock
 
 #Try to import the libraries and exit the program if some are missing
+import sys
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
     import threading

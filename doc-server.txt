@@ -1,3 +1,332 @@
-No module named http.server
-problem in server - <type 'exceptions.NameError'>: name 'sys' is not defined
+Help on module server:
+
+NAME
+    server
+
+DESCRIPTION
+    #-----------------------------------------------
+    #Libraries
+    #-----------------------------------------------
+
+CLASSES
+    http.server.BaseHTTPRequestHandler(socketserver.StreamRequestHandler)
+        RequestHandler_httpd
+    
+    class RequestHandler_httpd(http.server.BaseHTTPRequestHandler)
+     |  RequestHandler_httpd(request, client_address, server)
+     |  
+     |  HTTP request handler base class.
+     |  
+     |  The following explanation of HTTP serves to guide you through the
+     |  code as well as to expose any misunderstandings I may have about
+     |  HTTP (so you don't need to read the code to figure out I'm wrong
+     |  :-).
+     |  
+     |  HTTP (HyperText Transfer Protocol) is an extensible protocol on
+     |  top of a reliable stream transport (e.g. TCP/IP).  The protocol
+     |  recognizes three parts to a request:
+     |  
+     |  1. One line identifying the request type and path
+     |  2. An optional set of RFC-822-style headers
+     |  3. An optional data part
+     |  
+     |  The headers and data are separated by a blank line.
+     |  
+     |  The first line of the request has the form
+     |  
+     |  <command> <path> <version>
+     |  
+     |  where <command> is a (case-sensitive) keyword such as GET or POST,
+     |  <path> is a string containing path information for the request,
+     |  and <version> should be the string "HTTP/1.0" or "HTTP/1.1".
+     |  <path> is encoded using the URL encoding scheme (using %xx to signify
+     |  the ASCII character with hex code xx).
+     |  
+     |  The specification specifies that lines are separated by CRLF but
+     |  for compatibility with the widest range of clients recommends
+     |  servers also handle LF.  Similarly, whitespace in the request line
+     |  is treated sensibly (allowing multiple spaces between components
+     |  and allowing trailing whitespace).
+     |  
+     |  Similarly, for output, lines ought to be separated by CRLF pairs
+     |  but most clients grok LF characters just fine.
+     |  
+     |  If the first line of the request has the form
+     |  
+     |  <command> <path>
+     |  
+     |  (i.e. <version> is left out) then this is assumed to be an HTTP
+     |  0.9 request; this form has no optional headers and data part and
+     |  the reply consists of just the data.
+     |  
+     |  The reply form of the HTTP 1.x protocol again has three parts:
+     |  
+     |  1. One line giving the response code
+     |  2. An optional set of RFC-822-style headers
+     |  3. The data
+     |  
+     |  Again, the headers and data are separated by a blank line.
+     |  
+     |  The response code line has the form
+     |  
+     |  <version> <responsecode> <responsestring>
+     |  
+     |  where <version> is the protocol version ("HTTP/1.0" or "HTTP/1.1"),
+     |  <responsecode> is a 3-digit response code indicating success or
+     |  failure of the request, and <responsestring> is an optional
+     |  human-readable string explaining what the response code means.
+     |  
+     |  This server parses the request and the headers, and then calls a
+     |  function specific to the request type (<command>).  Specifically,
+     |  a request SPAM will be handled by a method do_SPAM().  If no
+     |  such method exists the server sends an error response to the
+     |  client.  If it exists, it is called with no arguments:
+     |  
+     |  do_SPAM()
+     |  
+     |  Note that the request name is case sensitive (i.e. SPAM and spam
+     |  are different requests).
+     |  
+     |  The various request details are stored in instance variables:
+     |  
+     |  - client_address is the client IP address in the form (host,
+     |  port);
+     |  
+     |  - command, path and version are the broken-down request line;
+     |  
+     |  - headers is an instance of email.message.Message (or a derived
+     |  class) containing the header information;
+     |  
+     |  - rfile is a file object open for reading positioned at the
+     |  start of the optional input data part;
+     |  
+     |  - wfile is a file object open for writing.
+     |  
+     |  IT IS IMPORTANT TO ADHERE TO THE PROTOCOL FOR WRITING!
+     |  
+     |  The first thing to be written must be the response line.  Then
+     |  follow 0 or more header lines, then a blank line, and then the
+     |  actual data (if any).  The meaning of the header lines depends on
+     |  the command executed by the server; in most cases, when data is
+     |  returned, there should be at least one header line of the form
+     |  
+     |  Content-type: <type>/<subtype>
+     |  
+     |  where <type> and <subtype> should be registered MIME types,
+     |  e.g. "text/html" or "text/plain".
+     |  
+     |  Method resolution order:
+     |      RequestHandler_httpd
+     |      http.server.BaseHTTPRequestHandler
+     |      socketserver.StreamRequestHandler
+     |      socketserver.BaseRequestHandler
+     |      builtins.object
+     |  
+     |  Methods defined here:
+     |  
+     |  do_GET(self)
+     |      The server receive callback method for use by the server thread
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |  
+     |  Request = []
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from http.server.BaseHTTPRequestHandler:
+     |  
+     |  address_string(self)
+     |      Return the client address.
+     |  
+     |  date_time_string(self, timestamp=None)
+     |      Return the current date and time formatted for a message header.
+     |  
+     |  end_headers(self)
+     |      Send the blank line ending the MIME headers.
+     |  
+     |  flush_headers(self)
+     |  
+     |  handle(self)
+     |      Handle multiple requests if necessary.
+     |  
+     |  handle_expect_100(self)
+     |      Decide what to do with an "Expect: 100-continue" header.
+     |      
+     |      If the client is expecting a 100 Continue response, we must
+     |      respond with either a 100 Continue or a final response before
+     |      waiting for the request body. The default is to always respond
+     |      with a 100 Continue. You can behave differently (for example,
+     |      reject unauthorized requests) by overriding this method.
+     |      
+     |      This method should either return True (possibly after sending
+     |      a 100 Continue response) or send an error response and return
+     |      False.
+     |  
+     |  handle_one_request(self)
+     |      Handle a single HTTP request.
+     |      
+     |      You normally don't need to override this method; see the class
+     |      __doc__ string for information on how to handle specific HTTP
+     |      commands such as GET and POST.
+     |  
+     |  log_date_time_string(self)
+     |      Return the current time formatted for logging.
+     |  
+     |  log_error(self, format, *args)
+     |      Log an error.
+     |      
+     |      This is called when a request cannot be fulfilled.  By
+     |      default it passes the message on to log_message().
+     |      
+     |      Arguments are the same as for log_message().
+     |      
+     |      XXX This should go to the separate error log.
+     |  
+     |  log_message(self, format, *args)
+     |      Log an arbitrary message.
+     |      
+     |      This is used by all other logging functions.  Override
+     |      it if you have specific logging wishes.
+     |      
+     |      The first argument, FORMAT, is a format string for the
+     |      message to be logged.  If the format string contains
+     |      any % escapes requiring parameters, they should be
+     |      specified as subsequent arguments (it's just like
+     |      printf!).
+     |      
+     |      The client ip and current date/time are prefixed to
+     |      every message.
+     |  
+     |  log_request(self, code='-', size='-')
+     |      Log an accepted request.
+     |      
+     |      This is called by send_response().
+     |  
+     |  parse_request(self)
+     |      Parse a request (internal).
+     |      
+     |      The request should be stored in self.raw_requestline; the results
+     |      are in self.command, self.path, self.request_version and
+     |      self.headers.
+     |      
+     |      Return True for success, False for failure; on failure, any relevant
+     |      error response has already been sent back.
+     |  
+     |  send_error(self, code, message=None, explain=None)
+     |      Send and log an error reply.
+     |      
+     |      Arguments are
+     |      * code:    an HTTP error code
+     |                 3 digits
+     |      * message: a simple optional 1 line reason phrase.
+     |                 *( HTAB / SP / VCHAR / %x80-FF )
+     |                 defaults to short entry matching the response code
+     |      * explain: a detailed message defaults to the long entry
+     |                 matching the response code.
+     |      
+     |      This sends an error response (so it must be called before any
+     |      output has been generated), logs the error, and finally sends
+     |      a piece of HTML explaining the error to the user.
+     |  
+     |  send_header(self, keyword, value)
+     |      Send a MIME header to the headers buffer.
+     |  
+     |  send_response(self, code, message=None)
+     |      Add the response header to the headers buffer and log the
+     |      response code.
+     |      
+     |      Also send two standard headers with the server software
+     |      version and the current date.
+     |  
+     |  send_response_only(self, code, message=None)
+     |      Send the response header only.
+     |  
+     |  version_string(self)
+     |      Return the server software version string.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from http.server.BaseHTTPRequestHandler:
+     |  
+     |  MessageClass = <class 'http.client.HTTPMessage'>
+     |      Basic message object.
+     |      
+     |      A message object is defined as something that has a bunch of RFC 2822
+     |      headers and a payload.  It may optionally have an envelope header
+     |      (a.k.a. Unix-From or From_ header).  If the message is a container (i.e. a
+     |      multipart or a message/rfc822), then the payload is a list of Message
+     |      objects, otherwise it is a string.
+     |      
+     |      Message objects implement part of the `mapping' interface, which assumes
+     |      there is exactly one occurrence of the header per message.  Some headers
+     |      do in fact appear multiple times (e.g. Received) and for those headers,
+     |      you must use the explicit API to set or get all the headers.  Not all of
+     |      the mapping methods are implemented.
+     |  
+     |  default_request_version = 'HTTP/0.9'
+     |  
+     |  error_content_type = 'text/html;charset=utf-8'
+     |  
+     |  error_message_format = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//...
+     |  
+     |  monthname = [None, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'A...
+     |  
+     |  protocol_version = 'HTTP/1.0'
+     |  
+     |  responses = {<HTTPStatus.CONTINUE: 100>: ('Continue', 'Request receive...
+     |  
+     |  server_version = 'BaseHTTP/0.6'
+     |  
+     |  sys_version = 'Python/3.7.3'
+     |  
+     |  weekdayname = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from socketserver.StreamRequestHandler:
+     |  
+     |  finish(self)
+     |  
+     |  setup(self)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from socketserver.StreamRequestHandler:
+     |  
+     |  disable_nagle_algorithm = False
+     |  
+     |  rbufsize = -1
+     |  
+     |  timeout = None
+     |  
+     |  wbufsize = 0
+     |  
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from socketserver.BaseRequestHandler:
+     |  
+     |  __init__(self, request, client_address, server)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from socketserver.BaseRequestHandler:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+
+FUNCTIONS
+    main()
+        Begins the HTTP server and listens for valid inputs from both the server and Keypad1 to control Lock1
+    
+    start_server()
+        Creates a thread and runs the server on it indefinately
+
+DATA
+    Keypad1 = <EOZ_IP40.Keypad object>
+    Lock1 = <RS_Pro_150N.Maglock object>
+    maincode = []
+    tempcode = []
+
+FILE
+    /home/pi/EEE3097S/EEE3097S-Project/RaspberryPiServer/server.py
+
 
