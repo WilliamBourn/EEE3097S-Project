@@ -22,7 +22,8 @@ of the Raspberry Pi, along with the negative terminal of the external power supp
 Mobile Application
 #--------------------------
 
-(Just fill this in with a simple description of how you would set this up)
+Download the app-debug.apk file from the repo and move it onto your android device in any folder you wish. Find the file on your device and tap it to open it, you will be prompted with "Install blocked, Your device does not allow you to install these types of files", you will have to click settings and grant access to the installation of apps from unknown sources on your device. Then tap the file again and you will be prompted to install the apk, tap "install" and then when you are prompted "This software may be harmful to your device" tap "install anyway". Once installed open the app.
+Pressing the open and close buttons on the app should provide feedback from the 'Gate-Closed Light' at the top of the app, this is how you know that the app is installed and working correctly.
 
 #--------------------------
 Server
