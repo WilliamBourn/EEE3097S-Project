@@ -22,7 +22,7 @@ It is suggested that you change the String URL in the MainActivity.java file fro
 Running the app
 #--------------------------
 
-The app will not work until you run the server.py file (with the API dependancies) on your Pi and also setup the circuit diagram as shown in the DemonstratorCircuitDiagram.PNG . 
+The app will not work until you run the server.py file (with the API dependancies) on your Pi and also setup the circuit diagram as shown in the DemonstratorCircuitDiagram.pdf . 
 The app is configured to only send the http requests to "http://192.168.0.120:8080/" so you will need to change the IP address of your Pi or edit the String URL in the MainActivity.java file and rebuild the apk.
 
 If setup was done correctly, the lock should activate and deactivate when the open and close gate buttons are pressed on the mobile app.
