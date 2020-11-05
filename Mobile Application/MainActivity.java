@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements  passcodeDialog.p
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
+        //View declarations
         mainPasscode = (TextView) findViewById(R.id.mainPasscode);
         tempPasscode = (TextView) findViewById(R.id.tempPasscode);
         gateStatusText = (TextView) findViewById(R.id.gateStatusText);
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements  passcodeDialog.p
         btnCloseGate = (Button) findViewById(R.id.btnCloseGate);
         imageViewGateStatus = (ImageView) findViewById(R.id.imageView_gateStatus);
 
+        //when the user clicks the button to enter a temp passcode
         btnTempPasscode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements  passcodeDialog.p
                 openDialog();
             }
         });
+        
+        //when the user clicks the button to enter a main passcode
         btnMainPasscode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,20 +70,24 @@ public class MainActivity extends AppCompatActivity implements  passcodeDialog.p
                 openDialog();
             }
         });
+        
+        //when the user clicks the button to open the gate
         btnOpenGate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageViewGateStatus.setImageResource(android.R.drawable.button_onoff_indicator_off);
+                imageViewGateStatus.setImageResource(android.R.drawable.button_onoff_indicator_off); //updates the image at the top of the app
                 gateStatusText.setText("Open");
                 //call the method that posts to the https
                 openWeb("off");
             }
         });
+        
+        //when the user clicks the button to close the gate
         btnCloseGate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gateStatusText.setText("Closed");
-                imageViewGateStatus.setImageResource(android.R.drawable.button_onoff_indicator_on);
+                imageViewGateStatus.setImageResource(android.R.drawable.button_onoff_indicator_on); //updates the image at the top of the app
                 //call the method that posts to the https
                 openWeb("on");
             }
@@ -95,15 +103,19 @@ public class MainActivity extends AppCompatActivity implements  passcodeDialog.p
         passcodeDialog.show(getSupportFragmentManager(), "Passcode dialog");
 
     }
+    
+    //code to make the HTTP requests
     public void openWeb(String postMessage){
         WebView webView = new WebView(this);
         //setContentView(webView);  //this is the code to display the webpage, which i dont want to do
         webView.loadUrl(httpPath+postMessage);
     }
-    public void sendPost(String postMessage){ //code not used, doesn't work
+    
+    //code not used, doesn't work
+    public void sendPost(String postMessage){ 
         OkHttpClient client = new OkHttpClient();
 
-        String url = "http://192.168.0.120:8080/";
+        String url = "http://192.168.0.120:8080/"; //this needs to be adjusted to suit your own IP adress of your Pi server
 
         Request request = new Request.Builder()
                 .url(url)
@@ -157,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements  passcodeDialog.p
 //        }
     }
 
+    //code that updates the text labels and calls the web method with the request
     @Override
     public void applytext(String passcode) {
         System.out.println("passcode to  text is: "+passcode);
