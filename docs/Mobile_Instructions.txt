@@ -1,0 +1,28 @@
+Mobile Instructions
+
+This is a guide for setting up and using the mobile software with as little work as possible.
+
+#--------------------------
+app-debug.apk setup
+#--------------------------
+
+Download the app-debug.apk file from the repo and move it onto your android device in any folder you wish. Find the file on your device and tap it to open it, you will be prompted with "Install blocked, Your device does not allow you to install these types of files", you will have to click settings and grant access to the installation of apps from unknown sources on your device. Then tap the file again and you will be prompted to install the apk, tap "install" and then when you are prompted "This software may be harmful to your device" tap "install anyway". Once installed open the app.
+Pressing the open and close buttons on the app should provide feedback from the 'Gate-Closed Light' at the top of the app, this is how you know that the app is installed and working correctly.
+
+#--------------------------
+Editing the app
+#--------------------------
+
+The MainActivity.java and passcodeDialog.java are provided in the Github repo to allow you to edit the app as you see fit. 
+The simplest way to do this is to copy and paste these 2 files as well as their respective xml files into your Android Studio project and use the emulator to test it for ease of use.
+
+It is suggested that you change the String URL in the MainActivity.java file from "http://192.168.0.120:8080/" to the IP address of your own Pi as it is likely to differ.
+
+#--------------------------
+Running the app
+#--------------------------
+
+The app will not work until you run the server.py file (with the API dependancies) on your Pi and also setup the circuit diagram as shown in the DemonstratorCircuitDiagram.PNG . 
+The app is configured to only send the http requests to "http://192.168.0.120:8080/" so you will need to change the IP address of your Pi or edit the String URL in the MainActivity.java file and rebuild the apk.
+
+If setup was done correctly, the lock should activate and deactivate when the open and close gate buttons are pressed on the mobile app.
