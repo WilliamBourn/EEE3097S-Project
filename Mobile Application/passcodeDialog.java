@@ -24,7 +24,7 @@ public class passcodeDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_dialog,null);
-        builder.setView(view)
+        builder.setView(view) //this creates the dialog box
                 .setTitle("Set Passcode to 0000 to disable")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -36,9 +36,9 @@ public class passcodeDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String passcode = editTextPasscode.getText().toString();
-                        System.out.println("passcode recieved is: "+passcode);
-                        Log.i(TAG,"passcode recieved is: "+passcode);
-                        listener.applytext(passcode);
+                        System.out.println("passcode recieved is: "+passcode);  //code for testing purposes
+                        Log.i(TAG,"passcode recieved is: "+passcode); //code for testing purposes
+                        listener.applytext(passcode); //calls back to the ActivityMain class to update the information
                     }
                 });
     editTextPasscode = view.findViewById(R.id.edit_passcode);
